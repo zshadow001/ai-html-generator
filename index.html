@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI HTML Generator</title>
+
+<style>
+body {
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  text-align: center;
+}
+input, textarea {
+  width: 90%;
+  margin: 10px;
+  padding: 10px;
+  background: #111;
+  color: #0f0;
+  border: 1px solid #0f0;
+}
+button {
+  padding: 10px 20px;
+  background: #0f0;
+  border: none;
+}
+iframe {
+  width: 90%;
+  height: 300px;
+  background: white;
+}
+</style>
+</head>
+
+<body>
+
+<h2>💀 AI HTML Generator</h2>
+
+<input id="prompt" placeholder="e.g. hacker login page">
+
+<button onclick="generate()">Generate</button>
+
+<textarea id="output" rows="12"></textarea><br>
+
+<button onclick="copy()">Copy</button>
+<button onclick="preview()">Preview</button>
+
+<iframe id="frame"></iframe>
+
+<script>
+async function generate() {
+  let prompt = document.getElementById("prompt").value;
+
+  let res = await fetch("/api/generate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({prompt})
+  });
+
+  let data = await res.json();
+  document.getElementById("output").value = data.code;
+}
+
+function copy() {
+  let text = document.getElementById("output");
+  text.select();
+  document.execCommand("copy");
+}
+
+function preview() {
+  let code = document.getElementById("output").value;
+  document.getElementById("frame").srcdoc = code;
+}
+</script>
+
+</body>
+</html>
